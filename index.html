@@ -4,55 +4,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f4f7fc">
+  <meta name="theme-color" content="#f5f7ff">
   <title>ScholarX | Learn. Practise. Excel.</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      color-scheme: light;
-      --bg: #f4f7fc;
+      --bg: #f5f7ff;
       --surface: #ffffff;
-      --text: #14213d;
-      --muted: #64748b;
-      --primary: #2563eb;
-      --border: #e2e8f0;
+      --text: #172033;
+      --muted: #68738a;
+      --primary: #5546e8;
+      --primary-hover: #4335ce;
+      --border: #e3e7f0;
+      --soft: #eeecff;
+      --success: #16834b;
+      --error: #c03939;
     }
 
-    body.dark {
-      color-scheme: dark;
-      --bg: #101827;
-      --surface: #1c293c;
-      --text: #ffffff;
-      --muted: #aab7ca;
-      --primary: #60a5fa;
-      --border: #304158;
+    [data-theme="dark"] {
+      --bg: #101321;
+      --surface: #1b2032;
+      --text: #f2f4ff;
+      --muted: #a5aec3;
+      --primary: #9185ff;
+      --primary-hover: #a69cff;
+      --border: #30374c;
+      --soft: #292644;
+      --success: #62d69a;
+      --error: #ff8585;
     }
 
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
     }
 
     body {
       background: var(--bg);
       color: var(--text);
+      font-family: Arial, sans-serif;
       min-height: 100vh;
-      transition: background 0.25s, color 0.25s;
+      transition: background .2s, color .2s;
     }
 
     header {
-      padding: 20px 7%;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      padding: 18px 7%;
       border-bottom: 1px solid var(--border);
+      background: var(--surface);
     }
 
     .logo {
-      font-size: 27px;
-      font-weight: bold;
+      font-size: 25px;
+      font-weight: 800;
       color: var(--primary);
     }
 
@@ -60,197 +69,360 @@
       color: var(--text);
     }
 
+    button {
+      cursor: pointer;
+      font-size: 15px;
+    }
+
     .theme-button {
-      background: var(--surface);
+      background: var(--soft);
       color: var(--text);
       border: 1px solid var(--border);
-      padding: 10px 15px;
       border-radius: 9px;
-      cursor: pointer;
-      font-size: 14px;
+      padding: 10px 13px;
+    }
+
+    main {
+      width: min(1100px, 90%);
+      margin: 55px auto;
     }
 
     .hero {
       text-align: center;
-      padding: 85px 20px 50px;
-      max-width: 780px;
-      margin: auto;
+      margin-bottom: 38px;
     }
 
-    .tag {
-      color: var(--primary);
-      font-size: 12px;
-      margin-bottom: 22px;
-      letter-spacing: 2px;
-      font-weight: bold;
-    }
-
-    h1 {
-      font-size: clamp(36px, 8vw, 58px);
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 52px);
       line-height: 1.15;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
-    h1 span {
+    .hero h1 span {
       color: var(--primary);
     }
 
-    .description {
+    .hero p {
       color: var(--muted);
-      line-height: 1.8;
-      font-size: 16px;
-      margin-bottom: 30px;
-    }
-
-    .button {
-      display: inline-block;
-      background: var(--primary);
-      color: white;
-      padding: 15px 28px;
-      border-radius: 9px;
-      text-decoration: none;
-      font-weight: bold;
+      line-height: 1.7;
+      max-width: 600px;
+      margin: auto;
     }
 
     .features {
       display: grid;
-      grid-template-columns: repeat(
-        auto-fit, minmax(220px, 1fr)
-      );
-      gap: 18px;
-      padding: 30px 7% 75px;
-      max-width: 1100px;
-      margin: auto;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 35px 0;
     }
 
     .feature {
       background: var(--surface);
-      padding: 27px;
       border: 1px solid var(--border);
-      border-radius: 13px;
-      transition: transform 0.2s;
-    }
-
-    .feature:hover {
-      transform: translateY(-4px);
+      border-radius: 15px;
+      padding: 22px;
     }
 
     .feature h3 {
-      margin-bottom: 13px;
+      margin-bottom: 9px;
       color: var(--primary);
     }
 
     .feature p {
       color: var(--muted);
-      line-height: 1.7;
+      line-height: 1.6;
       font-size: 14px;
+    }
+
+    .auth-card {
+      max-width: 440px;
+      margin: 35px auto;
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      box-shadow: 0 12px 35px rgba(30, 35, 80, .06);
+    }
+
+    .auth-card h2 {
+      margin-bottom: 9px;
+      font-size: 25px;
+    }
+
+    .auth-description {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 23px;
+    }
+
+    .field {
+      margin-bottom: 17px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      border-radius: 9px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .field input:focus {
+      border-color: var(--primary);
+    }
+
+    .primary-button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    .primary-button:hover {
+      background: var(--primary-hover);
+    }
+
+    .primary-button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .switch-text {
+      text-align: center;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .switch-text button {
+      border: none;
+      background: none;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .message {
+      display: none;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 9px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .message.success {
+      display: block;
+      background: rgba(22, 131, 75, .1);
+      color: var(--success);
+    }
+
+    .message.error {
+      display: block;
+      background: rgba(192, 57, 57, .1);
+      color: var(--error);
+    }
+
+    .dashboard {
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 17px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .dashboard h2 {
+      margin-bottom: 12px;
+    }
+
+    .dashboard p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .logout-button {
+      margin-top: 22px;
+      padding: 12px 20px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--soft);
+      color: var(--text);
     }
 
     footer {
       text-align: center;
-      padding: 25px;
       color: var(--muted);
-      border-top: 1px solid var(--border);
       font-size: 13px;
+      padding: 30px 15px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 650px) {
+      header {
+        padding: 15px 5%;
+      }
+
+      main {
+        margin: 35px auto;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-card {
+        padding: 22px;
+      }
     }
   </style>
 </head>
 
 <body>
-
   <header>
     <div class="logo">Scholar<span>X</span></div>
-
-    <button
-      class="theme-button"
-      id="themeToggle"
-      type="button"
-      aria-label="Switch colour theme"
-    >
+    <button class="theme-button" id="themeToggle">
       🌙 Dark Mode
     </button>
   </header>
 
-  <section class="hero">
-    <p class="tag">
-      YOUR JOURNEY TO EXCELLENCE STARTS HERE
-    </p>
-
-    <h1>
-      Prepare smarter.<br>
-      Achieve <span>more.</span>
-    </h1>
-
-    <p class="description">
-      Your learning companion for JAMB UTME 2027.
-      Practise past questions, improve your knowledge
-      and build the confidence to excel.
-    </p>
-
-    <a href="#features" class="button">
-      Explore ScholarX
-    </a>
-  </section>
-
-  <section class="features" id="features">
-
-    <div class="feature">
-      <h3>Past Questions</h3>
+  <main>
+    <section class="hero" id="hero">
+      <h1>Your Journey to <span>Excellence</span></h1>
       <p>
-        Practise examination questions and
-        strengthen your understanding.
+        Prepare smarter, practise confidently and take control
+        of your academic future with ScholarX.
       </p>
-    </div>
+    </section>
 
-    <div class="feature">
-      <h3>CBT Practice</h3>
-      <p>
-        Prepare with a computer-based
-        testing experience.
+    <section class="features" id="features">
+      <div class="feature">
+        <h3>Past Questions</h3>
+        <p>Build confidence with examination practice and past questions.</p>
+      </div>
+
+      <div class="feature">
+        <h3>CBT Practice</h3>
+        <p>Experience computer-based practice and test your knowledge.</p>
+      </div>
+
+      <div class="feature">
+        <h3>Track Progress</h3>
+        <p>Monitor your performance as you work towards your goals.</p>
+      </div>
+    </section>
+
+    <section class="auth-card" id="authCard">
+      <h2 id="formTitle">Create your account</h2>
+      <p class="auth-description" id="formDescription">
+        Join ScholarX and begin your journey to excellence.
       </p>
-    </div>
 
-    <div class="feature">
-      <h3>Track Progress</h3>
-      <p>
-        Monitor your performance and discover
-        areas that need improvement.
+      <div class="message" id="message" role="status"></div>
+
+      <form id="authForm">
+        <div class="field" id="nameField">
+          <label for="fullName">Full name</label>
+          <input
+            type="text"
+            id="fullName"
+            placeholder="Enter your full name"
+            autocomplete="name"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="email">Email address</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="At least 8 characters"
+            autocomplete="new-password"
+            minlength="8"
+            required
+          >
+        </div>
+
+        <button class="primary-button" id="submitButton" type="submit">
+          Create Account
+        </button>
+      </form>
+
+      <p class="switch-text" id="switchText">
+        Already have an account?
+        <button type="button" id="switchButton">Log in</button>
       </p>
-    </div>
+    </section>
 
-  </section>
+    <section class="dashboard hidden" id="dashboard">
+      <h2>Welcome to ScholarX!</h2>
+      <p id="studentGreeting"></p>
+      <p>Your learning journey starts here. More learning features are coming soon.</p>
+      <button class="logout-button" id="logoutButton">Log Out</button>
+    </section>
+  </main>
 
   <footer>
     © 2026 ScholarX. Learn. Practise. Excel.
   </footer>
 
   <script>
-    const toggle = document.getElementById("themeToggle");
+    // SCHOLARX SUPABASE CONNECTION
+    const SUPABASE_URL = "https://phiwmyavrgonlwqaarqx.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_NLKaJlDZJzjsL8uZ7r83ug_yOtSA5Na";
+
+    const client = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    // THEME SETTINGS
+    const themeToggle = document.getElementById("themeToggle");
 
     function applyTheme(theme) {
-      document.body.classList.toggle(
-        "dark",
-        theme === "dark"
-      );
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("scholarx-theme", theme);
 
-      toggle.textContent =
+      themeToggle.textContent =
         theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
 
       document.querySelector('meta[name="theme-color"]')
-        .setAttribute(
-          "content",
-          theme === "dark" ? "#101827" : "#f4f7fc"
-        );
+        .setAttribute("content", theme === "dark" ? "#101321" : "#f5f7ff");
     }
 
-    let savedTheme = null;
-
-    try {
-      savedTheme = localStorage.getItem("scholarx-theme");
-    } catch (error) {
-      savedTheme = null;
-    }
-
+    const savedTheme = localStorage.getItem("scholarx-theme");
     const preferredTheme =
       savedTheme ||
       (window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -259,21 +431,190 @@
 
     applyTheme(preferredTheme);
 
-    toggle.addEventListener("click", function () {
-      const newTheme =
-        document.body.classList.contains("dark")
-          ? "light"
-          : "dark";
+    themeToggle.addEventListener("click", () => {
+      const currentTheme =
+        document.documentElement.getAttribute("data-theme");
 
-      applyTheme(newTheme);
+      applyTheme(currentTheme === "dark" ? "light" : "dark");
+    });
+
+    // AUTHENTICATION ELEMENTS
+    const authCard = document.getElementById("authCard");
+    const authForm = document.getElementById("authForm");
+    const formTitle = document.getElementById("formTitle");
+    const formDescription = document.getElementById("formDescription");
+    const nameField = document.getElementById("nameField");
+    const fullName = document.getElementById("fullName");
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const message = document.getElementById("message");
+    const submitButton = document.getElementById("submitButton");
+    const switchButton = document.getElementById("switchButton");
+    const switchText = document.getElementById("switchText");
+    const dashboard = document.getElementById("dashboard");
+    const hero = document.getElementById("hero");
+    const features = document.getElementById("features");
+
+    let isSignUp = true;
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    function clearMessage() {
+      message.textContent = "";
+      message.className = "message";
+    }
+
+    function showSignUp() {
+      isSignUp = true;
+      formTitle.textContent = "Create your account";
+      formDescription.textContent =
+        "Join ScholarX and begin your journey to excellence.";
+      nameField.classList.remove("hidden");
+      fullName.required = true;
+      password.autocomplete = "new-password";
+      submitButton.textContent = "Create Account";
+      switchText.firstChild.textContent = "Already have an account? ";
+      switchButton.textContent = "Log in";
+      clearMessage();
+    }
+
+    function showLogin() {
+      isSignUp = false;
+      formTitle.textContent = "Welcome back";
+      formDescription.textContent =
+        "Log in to continue your learning journey.";
+      nameField.classList.add("hidden");
+      fullName.required = false;
+      password.autocomplete = "current-password";
+      submitButton.textContent = "Log In";
+      switchText.firstChild.textContent = "Don't have an account? ";
+      switchButton.textContent = "Create account";
+      clearMessage();
+    }
+
+    switchButton.addEventListener("click", () => {
+      if (isSignUp) {
+        showLogin();
+      } else {
+        showSignUp();
+      }
+    });
+
+    // REGISTRATION AND LOGIN
+    authForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      clearMessage();
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Please wait...";
 
       try {
-        localStorage.setItem("scholarx-theme", newTheme);
+        if (isSignUp) {
+          const name = fullName.value.trim();
+          const userEmail = email.value.trim();
+
+          if (!name) {
+            throw new Error("Please enter your full name.");
+          }
+
+          const { data, error } = await client.auth.signUp({
+            email: userEmail,
+            password: password.value,
+            options: {
+              data: {
+                full_name: name
+              },
+              emailRedirectTo: window.location.origin
+            }
+          });
+
+          if (error) throw error;
+
+          if (data.session) {
+            showDashboard(data.user);
+          } else {
+            showMessage(
+              "Your account has been created! Please check your email and click the verification link before logging in.",
+              "success"
+            );
+            authForm.reset();
+          }
+
+        } else {
+          const { data, error } =
+            await client.auth.signInWithPassword({
+              email: email.value.trim(),
+              password: password.value
+            });
+
+          if (error) throw error;
+
+          showDashboard(data.user);
+        }
+
       } catch (error) {
-        // Theme still works if storage is unavailable.
+        showMessage(error.message || "Something went wrong. Please try again.", "error");
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = isSignUp ? "Create Account" : "Log In";
+      }
+    });
+
+    // STUDENT DASHBOARD
+    function showDashboard(user) {
+      const name =
+        user.user_metadata?.full_name || "Student";
+
+      document.getElementById("studentGreeting").textContent =
+        "Hello, " + name + ". Welcome to your ScholarX student space.";
+
+      authCard.classList.add("hidden");
+      hero.classList.add("hidden");
+      features.classList.add("hidden");
+      dashboard.classList.remove("hidden");
+    }
+
+    // LOGOUT
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      const { error } = await client.auth.signOut();
+
+      if (error) {
+        showMessage(error.message, "error");
+        return;
+      }
+
+      dashboard.classList.add("hidden");
+      hero.classList.remove("hidden");
+      features.classList.remove("hidden");
+      authCard.classList.remove("hidden");
+      authForm.reset();
+      showLogin();
+    });
+
+    // RESTORE EXISTING LOGIN SESSION
+    async function checkSession() {
+      const { data, error } = await client.auth.getSession();
+
+      if (error) {
+        console.error("Session check failed:", error.message);
+        return;
+      }
+
+      if (data.session) {
+        showDashboard(data.session.user);
+      }
+    }
+
+    checkSession();
+
+    client.auth.onAuthStateChange((event, session) => {
+      if (session && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) {
+        showDashboard(session.user);
       }
     });
   </script>
-
 </body>
 </html>
