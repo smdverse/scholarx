@@ -952,7 +952,75 @@
     });
 
 
-    // LOGOUT
 
-    document.getElementById("logoutButton")
-      .addEv
+    // LOGOUT
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      const { error } = await client.auth.signOut();
+
+      if (error) {
+        showMessage(error.message, "error");
+        return;
+      }
+
+      dashboard.classList.add("hidden");
+      hero.classList.remove("hidden");
+      features.classList.remove("hidden");
+      authCard.classList.remove("hidden");
+      recoveryCard.classList.add("hidden");
+
+      authForm.reset();
+      showSignUp();
+    });
+
+    // RESTORE EXISTING LOGIN SESSION
+    let recoveryMode = false;
+
+    client.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") {
+        recoveryMode = true;
+        showRecoveryForm();
+        return;
+      }
+
+      if (event === "SIGNED_IN" && session && !recoveryMode) {
+        showDashboard(session.user);
+      }
+
+      if (event === "SIGNED_OUT") {
+        recoveryMode = false;
+      }
+    });
+
+    // CHECK FOR AN EXISTING SESSION
+    async function restoreSession() {
+      const { data, error } = await client.auth.getSession();
+
+      if (error) {
+        console.error("Session error:", error.message);
+        return;
+      }
+
+      if (data.session && !recoveryMode) {
+        showDashboard(data.session.user);
+      }
+    }
+
+    restoreSession();
+
+    // RESTORE SUN AND MOON THEME ICONS
+    function updateThemeIcon() {
+      const isDark =
+        document.documentElement.getAttribute("data-theme") === "dark";
+
+      themeToggle.innerHTML = isDark
+        ? "☀️ Light Mode"
+        : "🌙 Dark Mode";
+    }
+
+    updateThemeIcon();
+
+    themeToggle.addEventListener("click", updateThemeIcon);
+
+  </script>
+</body>
+</html>
