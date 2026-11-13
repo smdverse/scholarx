@@ -209,11 +209,18 @@
       font-size: 14px;
     }
 
-    .switch-text button {
+    .switch-text button,
+    .forgot-button {
       border: none;
       background: none;
       color: var(--primary);
       font-weight: 700;
+    }
+
+    .forgot-button {
+      display: block;
+      margin: 0 0 15px auto;
+      font-size: 14px;
     }
 
     .message {
@@ -297,14 +304,16 @@
 </head>
 
 <body>
+
   <header>
     <div class="logo">Scholar<span>X</span></div>
     <button class="theme-button" id="themeToggle">
-      🌙 Dark Mode
+      Dark Mode
     </button>
   </header>
 
   <main>
+
     <section class="hero" id="hero">
       <h1>Your Journey to <span>Excellence</span></h1>
       <p>
@@ -314,6 +323,7 @@
     </section>
 
     <section class="features" id="features">
+
       <div class="feature">
         <h3>Past Questions</h3>
         <p>Build confidence with examination practice and past questions.</p>
@@ -328,10 +338,15 @@
         <h3>Track Progress</h3>
         <p>Monitor your performance as you work towards your goals.</p>
       </div>
+
     </section>
 
+    <!-- REGISTRATION AND LOGIN -->
+
     <section class="auth-card" id="authCard">
+
       <h2 id="formTitle">Create your account</h2>
+
       <p class="auth-description" id="formDescription">
         Join ScholarX and begin your journey to excellence.
       </p>
@@ -339,6 +354,7 @@
       <div class="message" id="message" role="status"></div>
 
       <form id="authForm">
+
         <div class="field" id="nameField">
           <label for="fullName">Full name</label>
           <input
@@ -373,23 +389,92 @@
           >
         </div>
 
+        <button
+          type="button"
+          id="forgotPasswordButton"
+          class="forgot-button hidden"
+        >
+          Forgot Password?
+        </button>
+
         <button class="primary-button" id="submitButton" type="submit">
           Create Account
         </button>
+
       </form>
 
       <p class="switch-text" id="switchText">
         Already have an account?
         <button type="button" id="switchButton">Log in</button>
       </p>
+
     </section>
 
-    <section class="dashboard hidden" id="dashboard">
-      <h2>Welcome to ScholarX!</h2>
-      <p id="studentGreeting"></p>
-      <p>Your learning journey starts here. More learning features are coming soon.</p>
-      <button class="logout-button" id="logoutButton">Log Out</button>
+    <!-- PASSWORD RECOVERY -->
+
+    <section class="auth-card hidden" id="recoveryCard">
+
+      <h2>Reset your password</h2>
+
+      <p class="auth-description">
+        Choose a new password for your ScholarX account.
+      </p>
+
+      <div class="message" id="recoveryMessage" role="status"></div>
+
+      <form id="recoveryForm">
+
+        <div class="field">
+          <label for="newPassword">New password</label>
+          <input
+            type="password"
+            id="newPassword"
+            placeholder="Enter your new password"
+            minlength="8"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="confirmPassword">Confirm new password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            placeholder="Enter your new password again"
+            minlength="8"
+            autocomplete="new-password"
+            required
+          >
+        </div>
+
+        <button class="primary-button" id="updatePasswordButton" type="submit">
+          Update Password
+        </button>
+
+      </form>
+
     </section>
+
+    <!-- STUDENT DASHBOARD -->
+
+    <section class="dashboard hidden" id="dashboard">
+
+      <h2>Welcome to ScholarX!</h2>
+
+      <p id="studentGreeting"></p>
+
+      <p>
+        Your learning journey starts here.
+        More learning features are coming soon.
+      </p>
+
+      <button class="logout-button" id="logoutButton">
+        Log Out
+      </button>
+
+    </section>
+
   </main>
 
   <footer>
@@ -397,8 +482,11 @@
   </footer>
 
   <script>
-    // SCHOLARX SUPABASE CONNECTION
-    const SUPABASE_URL = "https://phiwmyavrgonlwqaarqx.supabase.co";
+
+    // SUPABASE CONNECTION
+
+    const SUPABASE_URL =
+      "https://phiwmyavrgonlwqaarqx.supabase.co";
 
     const SUPABASE_PUBLISHABLE_KEY =
       "sb_publishable_NLKaJlDZJzjsL8uZ7r83ug_yOtSA5Na";
@@ -408,21 +496,29 @@
       SUPABASE_PUBLISHABLE_KEY
     );
 
+
     // THEME SETTINGS
+
     const themeToggle = document.getElementById("themeToggle");
 
     function applyTheme(theme) {
+
       document.documentElement.setAttribute("data-theme", theme);
+
       localStorage.setItem("scholarx-theme", theme);
 
       themeToggle.textContent =
-        theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+        theme === "dark" ? "Light Mode" : "Dark Mode";
 
       document.querySelector('meta[name="theme-color"]')
-        .setAttribute("content", theme === "dark" ? "#101321" : "#f5f7ff");
+        .setAttribute(
+          "content",
+          theme === "dark" ? "#101321" : "#f5f7ff"
+        );
     }
 
     const savedTheme = localStorage.getItem("scholarx-theme");
+
     const preferredTheme =
       savedTheme ||
       (window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -432,139 +528,142 @@
     applyTheme(preferredTheme);
 
     themeToggle.addEventListener("click", () => {
+
       const currentTheme =
         document.documentElement.getAttribute("data-theme");
 
       applyTheme(currentTheme === "dark" ? "light" : "dark");
+
     });
 
-    // AUTHENTICATION ELEMENTS
+
+    // ELEMENTS
+
     const authCard = document.getElementById("authCard");
     const authForm = document.getElementById("authForm");
+
     const formTitle = document.getElementById("formTitle");
     const formDescription = document.getElementById("formDescription");
+
     const nameField = document.getElementById("nameField");
     const fullName = document.getElementById("fullName");
+
     const email = document.getElementById("email");
     const password = document.getElementById("password");
+
     const message = document.getElementById("message");
+
     const submitButton = document.getElementById("submitButton");
+
     const switchButton = document.getElementById("switchButton");
     const switchText = document.getElementById("switchText");
+
+    const forgotPasswordButton =
+      document.getElementById("forgotPasswordButton");
+
+    const recoveryCard = document.getElementById("recoveryCard");
+    const recoveryForm = document.getElementById("recoveryForm");
+    const recoveryMessage = document.getElementById("recoveryMessage");
+
+    const newPassword = document.getElementById("newPassword");
+    const confirmPassword = document.getElementById("confirmPassword");
+
+    const updatePasswordButton =
+      document.getElementById("updatePasswordButton");
+
     const dashboard = document.getElementById("dashboard");
+
     const hero = document.getElementById("hero");
     const features = document.getElementById("features");
 
     let isSignUp = true;
 
+
+    // MESSAGE FUNCTIONS
+
     function showMessage(text, type) {
+
       message.textContent = text;
       message.className = "message " + type;
+
     }
 
     function clearMessage() {
+
       message.textContent = "";
       message.className = "message";
+
     }
+
+    function showRecoveryMessage(text, type) {
+
+      recoveryMessage.textContent = text;
+      recoveryMessage.className = "message " + type;
+
+    }
+
+
+    // SCREEN MANAGEMENT
 
     function showSignUp() {
+
       isSignUp = true;
+
       formTitle.textContent = "Create your account";
+
       formDescription.textContent =
         "Join ScholarX and begin your journey to excellence.";
+
       nameField.classList.remove("hidden");
+      forgotPasswordButton.classList.add("hidden");
+
       fullName.required = true;
+
       password.autocomplete = "new-password";
+
       submitButton.textContent = "Create Account";
-      switchText.firstChild.textContent = "Already have an account? ";
+
+      switchText.firstChild.textContent =
+        "Already have an account? ";
+
       switchButton.textContent = "Log in";
+
       clearMessage();
+
     }
+
 
     function showLogin() {
+
       isSignUp = false;
+
       formTitle.textContent = "Welcome back";
+
       formDescription.textContent =
         "Log in to continue your learning journey.";
+
       nameField.classList.add("hidden");
+
+      forgotPasswordButton.classList.remove("hidden");
+
       fullName.required = false;
+
       password.autocomplete = "current-password";
+
       submitButton.textContent = "Log In";
-      switchText.firstChild.textContent = "Don't have an account? ";
+
+      switchText.firstChild.textContent =
+        "Don't have an account? ";
+
       switchButton.textContent = "Create account";
+
       clearMessage();
+
     }
 
-    switchButton.addEventListener("click", () => {
-      if (isSignUp) {
-        showLogin();
-      } else {
-        showSignUp();
-      }
-    });
 
-    // REGISTRATION AND LOGIN
-    authForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      clearMessage();
-
-      submitButton.disabled = true;
-      submitButton.textContent = "Please wait...";
-
-      try {
-        if (isSignUp) {
-          const name = fullName.value.trim();
-          const userEmail = email.value.trim();
-
-          if (!name) {
-            throw new Error("Please enter your full name.");
-          }
-
-          const { data, error } = await client.auth.signUp({
-            email: userEmail,
-            password: password.value,
-            options: {
-              data: {
-                full_name: name
-              },
-              emailRedirectTo: window.location.origin
-            }
-          });
-
-          if (error) throw error;
-
-          if (data.session) {
-            showDashboard(data.user);
-          } else {
-            showMessage(
-              "Your account has been created! Please check your email and click the verification link before logging in.",
-              "success"
-            );
-            authForm.reset();
-          }
-
-        } else {
-          const { data, error } =
-            await client.auth.signInWithPassword({
-              email: email.value.trim(),
-              password: password.value
-            });
-
-          if (error) throw error;
-
-          showDashboard(data.user);
-        }
-
-      } catch (error) {
-        showMessage(error.message || "Something went wrong. Please try again.", "error");
-      } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = isSignUp ? "Create Account" : "Log In";
-      }
-    });
-
-    // STUDENT DASHBOARD
     function showDashboard(user) {
+
       const name =
         user.user_metadata?.full_name || "Student";
 
@@ -572,49 +671,288 @@
         "Hello, " + name + ". Welcome to your ScholarX student space.";
 
       authCard.classList.add("hidden");
+      recoveryCard.classList.add("hidden");
+
       hero.classList.add("hidden");
       features.classList.add("hidden");
+
       dashboard.classList.remove("hidden");
+
     }
+
+
+    function showRecoveryForm() {
+
+      authCard.classList.add("hidden");
+      dashboard.classList.add("hidden");
+
+      hero.classList.add("hidden");
+      features.classList.add("hidden");
+
+      recoveryCard.classList.remove("hidden");
+
+      recoveryForm.reset();
+
+      recoveryMessage.textContent = "";
+      recoveryMessage.className = "message";
+
+    }
+
+
+    // SWITCH BETWEEN SIGNUP AND LOGIN
+
+    switchButton.addEventListener("click", () => {
+
+      if (isSignUp) {
+        showLogin();
+      } else {
+        showSignUp();
+      }
+
+    });
+
+
+    // REGISTRATION AND LOGIN
+
+    authForm.addEventListener("submit", async (event) => {
+
+      event.preventDefault();
+
+      clearMessage();
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Please wait...";
+
+      try {
+
+        if (isSignUp) {
+
+          const name = fullName.value.trim();
+
+          const userEmail = email.value.trim();
+
+          if (!name) {
+            throw new Error("Please enter your full name.");
+          }
+
+          const { data, error } = await client.auth.signUp({
+
+            email: userEmail,
+
+            password: password.value,
+
+            options: {
+
+              data: {
+                full_name: name
+              },
+
+              emailRedirectTo: window.location.origin
+
+            }
+
+          });
+
+          if (error) throw error;
+
+          if (data.session) {
+
+            showDashboard(data.user);
+
+          } else {
+
+            showMessage(
+              "Your account has been created! Please check your email and click the verification link before logging in.",
+              "success"
+            );
+
+            authForm.reset();
+
+          }
+
+        } else {
+
+          const { data, error } =
+            await client.auth.signInWithPassword({
+
+              email: email.value.trim(),
+
+              password: password.value
+
+            });
+
+          if (error) throw error;
+
+          showDashboard(data.user);
+
+        }
+
+      } catch (error) {
+
+        showMessage(
+          error.message || "Something went wrong. Please try again.",
+          "error"
+        );
+
+      } finally {
+
+        submitButton.disabled = false;
+
+        submitButton.textContent =
+          isSignUp ? "Create Account" : "Log In";
+
+      }
+
+    });
+
+
+    // FORGOT PASSWORD
+
+    forgotPasswordButton.addEventListener("click", async () => {
+
+      clearMessage();
+
+      const userEmail = email.value.trim();
+
+      if (!userEmail) {
+
+        showMessage(
+          "Please enter your registered email address first.",
+          "error"
+        );
+
+        email.focus();
+
+        return;
+
+      }
+
+      forgotPasswordButton.disabled = true;
+
+      forgotPasswordButton.textContent = "Sending...";
+
+      try {
+
+        const { error } =
+          await client.auth.resetPasswordForEmail(
+
+            userEmail,
+
+            {
+              redirectTo: window.location.origin
+            }
+
+          );
+
+        if (error) throw error;
+
+        showMessage(
+          "If an account exists for this email, a password reset link will be sent. Please check your inbox.",
+          "success"
+        );
+
+      } catch (error) {
+
+        showMessage(error.message, "error");
+
+      } finally {
+
+        forgotPasswordButton.disabled = false;
+
+        forgotPasswordButton.textContent = "Forgot Password?";
+
+      }
+
+    });
+
+
+    // UPDATE PASSWORD AFTER EMAIL RECOVERY
+
+    recoveryForm.addEventListener("submit", async (event) => {
+
+      event.preventDefault();
+
+      recoveryMessage.textContent = "";
+      recoveryMessage.className = "message";
+
+      const firstPassword = newPassword.value;
+      const secondPassword = confirmPassword.value;
+
+      if (firstPassword.length < 8) {
+
+        showRecoveryMessage(
+          "Your password must contain at least 8 characters.",
+          "error"
+        );
+
+        return;
+
+      }
+
+      if (firstPassword !== secondPassword) {
+
+        showRecoveryMessage(
+          "Your passwords do not match. Please try again.",
+          "error"
+        );
+
+        return;
+
+      }
+
+      updatePasswordButton.disabled = true;
+      updatePasswordButton.textContent = "Updating...";
+
+      try {
+
+        const { error } = await client.auth.updateUser({
+
+          password: firstPassword
+
+        });
+
+        if (error) throw error;
+
+        showRecoveryMessage(
+          "Your password has been updated successfully. You can now log in with your new password.",
+          "success"
+        );
+
+        recoveryForm.reset();
+
+        await client.auth.signOut();
+
+        recoveryCard.classList.add("hidden");
+
+        authCard.classList.remove("hidden");
+        hero.classList.remove("hidden");
+        features.classList.remove("hidden");
+
+        showLogin();
+
+        showMessage(
+          "Password updated successfully. Please log in with your new password.",
+          "success"
+        );
+
+      } catch (error) {
+
+        showRecoveryMessage(
+          error.message || "Unable to update your password. Please try again.",
+          "error"
+        );
+
+      } finally {
+
+        updatePasswordButton.disabled = false;
+        updatePasswordButton.textContent = "Update Password";
+
+      }
+
+    });
+
 
     // LOGOUT
-    document.getElementById("logoutButton").addEventListener("click", async () => {
-      const { error } = await client.auth.signOut();
 
-      if (error) {
-        showMessage(error.message, "error");
-        return;
-      }
-
-      dashboard.classList.add("hidden");
-      hero.classList.remove("hidden");
-      features.classList.remove("hidden");
-      authCard.classList.remove("hidden");
-      authForm.reset();
-      showLogin();
-    });
-
-    // RESTORE EXISTING LOGIN SESSION
-    async function checkSession() {
-      const { data, error } = await client.auth.getSession();
-
-      if (error) {
-        console.error("Session check failed:", error.message);
-        return;
-      }
-
-      if (data.session) {
-        showDashboard(data.session.user);
-      }
-    }
-
-    checkSession();
-
-    client.auth.onAuthStateChange((event, session) => {
-      if (session && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) {
-        showDashboard(session.user);
-      }
-    });
-  </script>
-</body>
-</html>
+    document.getElementById("logoutButton")
+      .addEv
